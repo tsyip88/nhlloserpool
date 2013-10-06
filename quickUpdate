@@ -1,0 +1,5 @@
+#!/bin/bash
+cp loserpool/settings.py ..
+git checkout -- loserpool/settings.py
+git pull origin master
+cp ../settings.py loserpool/settings.py 
