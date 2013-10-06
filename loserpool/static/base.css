@@ -13,6 +13,14 @@ h3 {
 	color:#889;
 }
 
+.knocked_out_set {
+	color:red;
+	text-decoration:line-through;
+}
+
+.knocked_out {
+	background-color:grey;
+}
 .pick_set_name {
 	margin:0.2em;
 }
@@ -162,19 +170,10 @@ table {
 	border-spacing:0.1em 0.1em;
 }
 
-.winning_user {
-	border:2px solid #0a5;
-	background-color:#ff0;
-}
-
 td {
 	border:1px solid #ccc;
 	text-align:center;
 	vertical-align:middle;
-}
-
-.winning_pick {
-	border:2px solid #0a5;
 }
 
 ul {
@@ -186,5 +185,6 @@ ul {
 }
 
 #scoreboard_table{
-	overflow-x:auto;
+	max-height:800px;
+	overflow:auto;
 }

@@ -11,6 +11,15 @@
 </div>
 
 {% if is_admin %}
+<p>Week number:</p>
+	{% for week in weeks %}
+		{% if week_number == week %}
+			{{week_number}}
+		{% else %}
+			<a href="{% url 'matchups:admin_submit_picks_for_week' week submit_user.id%}">{{week}}</a>
+		{% endif %}
+	{% endfor %}
+
 <p>Select User</p>
 <form id="user_selection_form" action="{% url 'matchups:admin_submit_picks_for_week' week_number submit_user.id %}" method="post">
 {% csrf_token %}
@@ -63,7 +72,7 @@ selector.addEventListener('change', handleChange);
 		{% for form in form_list %}
 		<div class="form">
 			<h4>{{form.selected_team.label}}</h4>
-			{% if form.instance.pick_set.id in unavailable_picks %}
+			{% if form.instance.pick_set.id in unavailable_picks and not is_admin%}
 				<p>Knocked out</p>
 			{% else %}
 				<p>{{form.selected_team.errors}}</p>

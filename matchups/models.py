@@ -32,16 +32,16 @@ class Matchup(models.Model):
     
 class PickSet(models.Model):
     user = models.ForeignKey(User)
-    def number(self):
+    def letter_id(self):
         index = 0
         for pick in PickSet.objects.filter(user=self.user):
-            index += 1
             if pick.id == self.id:
-                return index
+                return chr(ord('A')+index)
+            index += 1
         return 0
     
     def __unicode__(self): 
-        return self.user.username + " - " + str(self.number())
+        return self.user.username + " - " + str(self.letter_id())
     
     def is_pick_set_invalid(self):
         pick_values = Pick.objects.filter(pick_set__id=self.id).values_list('is_winning_pick', flat=True)

@@ -17,7 +17,7 @@ class PickForm(forms.ModelForm):
                 if team.id not in previously_selected_teams:
                     widget_choices.append((team.id, team.full_name()))
         self.fields['selected_team'].widget.choices = widget_choices
-        pick_label = "Loser pick " + str(self.instance.pick_set.number())
+        pick_label = "Loser pick " + str(self.instance.pick_set.letter_id())
         self.fields['selected_team'].label = pick_label
         
 class MatchupForm(forms.ModelForm):

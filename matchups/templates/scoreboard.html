@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load matchup_template_extras %}
 {% block content %}
 <div id="content_title">
 <h1>Scoreboard <em>Week {{selected_week}} - {{week_date}}</em></h1>
@@ -9,30 +9,29 @@
 <table>
 	<tr>
 		<th>Matchup</th>
-		{% for week_number in weeks %}
-		<th>Week {{week_number}}</th>
+		{% for week_number in max_weeks|get_range %}
+		<th>Week {{week_number|add:"1"}}</th>
 		{% endfor %}
 	</tr>
 	{% for pick_set in pick_sets %}
 	<tr>
 		<td>
 		<div class="pick_set_name">
-		{{pick_set}}
+		<h5{% if pick_set.is_pick_set_invalid %} class="knocked_out_set"{% endif %}>{{pick_set}}</h5>
 		</div>
 		</td>
 		{% for pick in pick_set.pick_set.all %}
+		{% if pick.pick_set.user != user and pick.week_number = selected_week and hide_other_team_picks_for_current_week and not is_admin %}
+			<td></td>
+		{% else %}
 		<td{% if pick.is_winning_pick %} class="winning_pick"{% endif %}><div class="team_icon"><img src="{{STATIC_URL}}{{pick.selected_team.image_location}}"/><p>{{pick.selected_team}}</p></div></td>
+		{% endif %}
+		{% endfor %}
+		{% for week_num in max_weeks|subtract:pick_set.pick_set.count|get_range %}
+		<td {%if pick_set.is_pick_set_invalid %} class="knocked_out"{% endif %}></td>
 		{% endfor %}
 	</tr>
 	{% endfor %}
-	{% if wins %}
-	<tr>
-		<td>Wins</td>
-		{% for win in wins %}
-			<td{%if win.has_most_number_of_wins %} class="most_wins"{%endif%}>{{win.number_of_wins}}</td>
-		{% endfor %}
-	</tr>
-	{% endif %}
 </table>
 </div>
 {% endblock %}

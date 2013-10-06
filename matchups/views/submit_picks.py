@@ -55,6 +55,8 @@ def submit_picks_for_user(request, week_number, user, is_admin = False):
                'week_number': int(week_number),
                'submitted_picks': request.method=="POST",
                'week_date' : week_date,
+               'users' : User.objects.all(),
+               'weeks' : range(1,utilities.current_week_number()+2),
                'submit_user' : user,
                'unavailable_picks' : unavailable_picks,
                'no_more_available_picks' : no_more_available_picks,
