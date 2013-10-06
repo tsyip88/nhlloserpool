@@ -49,26 +49,35 @@ selector.addEventListener('change', handleChange);
 </div>
 
 <div id="pick_block">
-<h3>Picks</h3>
-{% if form_list %}
-	{% if is_admin %}
-	<form action="{% url 'matchups:admin_submit_picks_for_week' week_number submit_user.id %}" method="post">
-	{% else %}
-	<form action="{% url 'matchups:submit_picks_for_week' week_number %}" method="post" name="nme1">
-	{% endif %}
-	{% csrf_token %}
-	
-	{% for form in form_list %}
-	<div class="form">
-		{{form}}
-	</div>
-	{% endfor %}
-		<div id="submit_button">
-			<input type="submit" value="Submit picks" id="submit" name="submit_picks"/>
-		</div>
-	</form>
+<h3>Picks</h3>	
+{% if no_more_available_picks %}
+	<p>Sorry, no more picks are available</p>
 {% else %}
-	<p>No matchups available</p>
+	{% if form_list %}
+		{% if is_admin %}
+			<form action="{% url 'matchups:admin_submit_picks_for_week' week_number submit_user.id %}" method="post">
+		{% else %}
+			<form action="{% url 'matchups:submit_picks_for_week' week_number %}" method="post" name="nme1">
+		{% endif %}
+		{% csrf_token %}
+		{% for form in form_list %}
+		<div class="form">
+			<h4>{{form.selected_team.label}}</h4>
+			{% if form.instance.pick_set.id in unavailable_picks %}
+				<p>Knocked out</p>
+			{% else %}
+				<p>{{form.selected_team.errors}}</p>
+				<p>{{form.selected_team}}</p>
+			{% endif %}
+		</div>
+		{% endfor %}
+			<div id="submit_button">
+			<input type="submit" value="Submit picks" id="submit" name="submit_picks"/>
+			</div>
+			</form>
+	{% else %}
+		<p>No matchups available</p>
+	{% endif %}
 {% endif %}
 </div>
 

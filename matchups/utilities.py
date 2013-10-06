@@ -38,7 +38,8 @@ def week_number_for_matchup(matchup):
     return int(week_number)
     
 def matchups_for_week(week_number):
-    game_day = FIRST_GAME_DAY
+    days_from_first_game = DAYS_IN_A_WEEK*(int(week_number)-1)
+    game_day = FIRST_GAME_DAY +  datetime.timedelta(days=days_from_first_game)
     day_after_game_day = game_day + datetime.timedelta(days=1);
     matchups = Matchup.objects.filter(date_time__gte=game_day, date_time__lt=day_after_game_day)
     return matchups

@@ -12,7 +12,7 @@ class MatchupDataRetriever:
     @staticmethod    
     def load_matchups():
         #url = "http://www.nhl.com/ice/schedulebyseason.htm"
-        url = "/home/tyip/workspace/loserpool/tpt.html"
+        url = "/home/tyip/workspace/tpt.html"
         contents, success = MatchupDataRetriever.retrieve_site_contents(url)        
         if not success:
             print "failed to load contents from: " + url
@@ -77,9 +77,11 @@ class MatchupScheduleParser(HTMLParser):
         if self.attr_contains_val(attrs, 'shape', 'rect') and self.in_team_name_field:
             if not self.away_team:
                 team_abbrev = self.get_attr_val(attrs, 'rel')
+                print team_abbrev
                 self.away_team = teams.models.Team.objects.get(abbreviation=team_abbrev)
             else:
                 team_abbrev = self.get_attr_val(attrs, 'rel')
+                print team_abbrev
                 self.home_team = teams.models.Team.objects.get(abbreviation=team_abbrev)
         if tag == 'span':
             self.save_matchup_if_have_valid_data()
