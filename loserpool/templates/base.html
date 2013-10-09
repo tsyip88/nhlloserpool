@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% load static from staticfiles %}
+	<link rel="stylesheet" href="{% static "base.css" %}">
+	<title>{% block title %}Poolie{% endblock %}</title>
+</head>
+
+<body>
+	<div id="page">
+		<div id="header">
+			{% block header %}
+			<p>
+			{% if user.is_authenticated %}
+			Welcome <a href="{% url 'user_options' %}">{{user}}</a>. <a href="{% url 'logout' %}">Sign out</a>
+			{% else %}
+			<a href="{% url 'login' %}">Sign in</a>
+			{% endif %}
+			</p>
+			{% endblock %}
+		</div>
+	
+		<div id="navigation">
+			{% block navigation %}
+			<ul>
+				<li><a href="{% url 'index' %}">Home</a></li>
+				<li><a href="{% url 'matchups:scoreboard' %}">Scoreboard</a></li>
+				<li><a href="{% url 'matchups:submit_picks' %}">Submit Picks</a></li>
+			</ul>
+			{% endblock %}
+		</div>
+	
+		<div id="content">
+			{% block content %}Content{% endblock %}
+		</div>
+		
+		<div id="footer">
+			{% block footer %}©2013 Poolie{% endblock%}
+		</div>
+	</div>
+</body>
+
+</html>

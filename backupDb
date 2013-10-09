@@ -1,0 +1,9 @@
+#!/bin/bash
+SQL_USER='tyip'
+SQL_PASSWORD='lagisbad'
+SQL_HOST='127.0.0.1'
+SQL_PORT='3306'
+SQL_DATABASE_NAME='nhlloserpool'
+SQL_LOG_DATE=$(date +"%F")
+OUTPUT_FILE=/home/tyip/workspace/backups/$SQL_DATABASE_NAME-$SQL_LOG_DATE.sql
+mysqldump --host=$SQL_HOST --port=$SQL_PORT --user=$SQL_USER --password=$SQL_PASSWORD $SQL_DATABASE_NAME > $OUTPUT_FILE

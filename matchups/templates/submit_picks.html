@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="content_title">
+{% if is_admin %}
+<h1>Submitting picks for {{submit_user}}
+{% else %}
+<h1>Submit Picks 
+{% endif %}
+<em> Week {{week_number}} - {{week_date}}</em></h1>
+</div>
+
+{% if is_admin %}
+<p>Select User</p>
+<form id="user_selection_form" action="{% url 'matchups:admin_submit_picks_for_week' week_number submit_user.id %}" method="post">
+{% csrf_token %}
+<select id='user_selection' name='user_select'>
+{% for user_option in users %}
+{% if user_option == submit_user %}
+<option selected>{{user_option}}</option>
+{% else %}
+<option>{{user_option}}</option>
+{% endif %}
+{% endfor %}
+</select>
+</form>
+{% endif %}
+
+<script>
+var handleChange = function(event){
+var form = document.querySelector('#user_selection_form');
+form.submit();
+}
+var selector = document.querySelector('#user_selection');
+selector.addEventListener('change', handleChange);
+</script>
+
+<div id="prompt">
+{% if not error_message and submitted_picks %}
+	<div class='submitted_picks'>
+	Successfully submitted picks
+	</div>
+{% endif %}
+{% if error_message %}
+	<div class='error_message'>
+	{{error_message}}
+	</div>
+{% endif %}
+</div>
+
+<div id="pick_block">
+<h3>Picks</h3>
+{% if form_list %}
+	{% if is_admin %}
+	<form action="{% url 'matchups:admin_submit_picks_for_week' week_number submit_user.id %}" method="post">
+	{% else %}
+	<form action="{% url 'matchups:submit_picks_for_week' week_number %}" method="post" name="nme1">
+	{% endif %}
+	{% csrf_token %}
+	
+	{% for form in form_list %}
+	<div class="form">
+		{{form}}
+	</div>
+	{% endfor %}
+		<div id="submit_button">
+			<input type="submit" value="Submit picks" id="submit" name="submit_picks"/>
+		</div>
+	</form>
+{% else %}
+	<p>No matchups available</p>
+{% endif %}
+</div>
+
+<div id="matchup_block">
+<h3>Matchups for Saturday, {{week_date}}</h3>
+<table>
+<tr><th>Away Team</th><th>Home Team</th></tr>
+{% for matchup in matchup_list %}
+<tr>
+<td><div class="team_icon"><img src="{{STATIC_URL}}{{matchup.home_team.image_location}}"/><p>{{matchup.home_team}}</p></div></td>
+<td><div class="team_icon"><img src="{{STATIC_URL}}{{matchup.away_team.image_location}}"/><p>{{matchup.away_team}}</p></div></td></tr>
+{% endfor %}
+</table>
+</div>
+
+{% endblock %}

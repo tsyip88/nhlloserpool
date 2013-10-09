@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Account Settings</h1>
+<ul>
+<li><a href="{% url 'password_change' %}">Change Password</a></li>
+
+{% if perms.matchups.add_matchup %}
+<li><a href="{% url 'matchups:update_current_scores' %}">Update Weekly Scores</a></li>
+<li><a href="{% url 'matchups:admin_submit_picks_for_week' week_number user.id%}">Admin - Submit Picks</a></li>
+<li><a href="{% url 'matchups:admin_scoreboard_for_week' week_number%}">Admin - Scoreboard</a></li>
+{% endif %}
+</ul>
+{% endblock %}

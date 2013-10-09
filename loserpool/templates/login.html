@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Login</h1>
+
+{% if error_message %}
+	<p>{{error_message}}</p>
+{% endif %}
+{% if user.is_authenticated %}
+	<p>You are already logged in as {{user}}. <a href="{% url 'logout' %}">Logout</a></p> 
+{% else %}
+	{% if redirect_to %}
+	<form action="{% url 'login' %}?next={{redirect_to}}" method="post">
+	{% else %}
+	<form action="{% url 'login' %}" method="post">
+	{% endif %}
+
+	{% csrf_token %}
+		<div class="form">
+		<p>Username {{login_form.username}}</p>
+		</div>
+		<div class="form">
+		<p>Password {{login_form.password}}</p>
+		</div>
+		<div class="form">
+		<input type="submit" value="Login" />
+		</div>
+	</form>
+{% endif %}
+{% endblock %}

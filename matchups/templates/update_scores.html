@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="content_title">
+<h1>Update Scores <em>Week {{selected_week}} - {{week_date}}</em></h1>
+</div>
+
+<p>Week number:</p>
+{% for week_number in weeks %}
+{% if selected_week == week_number %}
+{{week_number}}
+{% else %}
+<a href="{% url 'matchups:update_scores_for_week' week_number %}">{{week_number}}</a>  
+{% endif %}
+{% endfor %}
+
+<div id="update_scores">
+<form action="{% url 'matchups:update_scores_for_week' selected_week %}" method="post">
+{% csrf_token %}
+{% for form in forms %}
+<div class="matchup_label">{{form.instance.full_name}}</div>
+<div class="form">
+{{form.instance.away_team}}: {{form.away_team_score}}        {{form.instance.home_team}}: {{form.home_team_score}}
+Went to shootout: {{form.went_to_shootout}}
+</div>
+{% endfor %}
+<div id="submit_button">
+	<input type="submit" value="Update scores" id="submit"/>
+</div>
+</form>
+</div>
+
+{% endblock %}

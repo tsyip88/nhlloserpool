@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<ul>
+
+<li><form action="{% url 'admin_actions' %}" method="post">
+	{% csrf_token %}
+	<input type="submit" name="load_teams" value="load load_teams" />
+</form></li>
+
+<li><form action="{% url 'admin_actions' %}" method="post">
+	{% csrf_token %}
+	<input type="submit" name="load_images" value="load_images" />
+</form></li>
+
+<li><form action="{% url 'admin_actions' %}" method="post">
+	{% csrf_token %}
+	<input type="submit" name="load_matchups" value="load matchups" />
+</form></li>
+
+</ul>
+{% endblock %}

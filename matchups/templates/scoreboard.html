@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="content_title">
+<h1>Scoreboard <em>Week {{selected_week}} - {{week_date}}</em></h1>
+</div>
+
+<div id="scoreboard_table">
+<table>
+	<tr>
+		<th>Matchup</th>
+		{% for week_number in weeks %}
+		<th>Week {{week_number}}</th>
+		{% endfor %}
+	</tr>
+	{% for pick_set in pick_sets %}
+	<tr>
+		<td>
+		<div class="pick_set_name">
+		{{pick_set}}
+		</div>
+		</td>
+		{% for pick in pick_set.pick_set.all %}
+		<td{% if pick.is_winning_pick %} class="winning_pick"{% endif %}><div class="team_icon"><img src="{{STATIC_URL}}{{pick.selected_team.image_location}}"/><p>{{pick.selected_team}}</p></div></td>
+		{% endfor %}
+	</tr>
+	{% endfor %}
+	{% if wins %}
+	<tr>
+		<td>Wins</td>
+		{% for win in wins %}
+			<td{%if win.has_most_number_of_wins %} class="most_wins"{%endif%}>{{win.number_of_wins}}</td>
+		{% endfor %}
+	</tr>
+	{% endif %}
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,190 @@
+* {
+	margin:0;
+	padding:0;
+}
+
+a {
+	color:blue;
+	text-decoration:none;
+	font-weight:bold;
+}
+
+h3 {
+	color:#889;
+}
+
+.pick_set_name {
+	margin:0.2em;
+}
+#content_title, #prompt {
+	margin-bottom:0.5em;
+}
+#matchup_block {
+	margin-bottom:2em;
+	float:left;
+	width:45%;
+}
+#pick_block {
+	float:left;
+	width:45%;
+}
+
+#header a{
+	color:#5c5;
+}
+
+#navigation a {
+	color:green;
+}
+
+body {
+	font-family: arial;
+	background-color:#444;
+}
+
+#content_title em{
+	font-family: helvetica;
+	font-weight: lighter;
+	font-size: 0.6em;
+}
+
+#page {
+	margin-left:auto;
+	margin-right:auto;
+	width:55em;
+	background-color:#8ce;
+}
+
+#header, #footer {
+	background-color:#13e;
+	color:#ececec;
+	padding:0.3em;
+}
+
+#header {
+	margin-top:0.5em;
+	text-align:right;
+}
+
+#footer {
+	text-align:center;
+	margin-bottom:0.5em;
+}
+
+#navigation {
+	position:relative;
+}
+
+#navigation li {
+	float:left;
+	font-weight: bold;
+	color:#33339f;
+	padding:0.5em;
+}
+
+#content {
+	clear:both;
+	position:relative;
+	min-height:60em;
+	background-color:#fff;
+	padding:0.5em;
+}
+
+#content * {
+padding:0.1em;
+}
+
+.blog_title {
+	color:#027;
+}
+.blog_date_time {
+	color:#555;
+	float:left;
+}
+.blog_author {
+	color:#555;
+	float:left;
+}
+.blog_content {
+	clear:both;
+	margin-bottom:2em;
+}
+
+.matchup_label {
+	margin-top:1em;
+}
+
+.error_message{
+	color:#f00;
+}
+.submitted_picks{
+	color:#0aa;
+}
+.error_message, .submitted_picks {
+	font-size:18px;
+	font-style:italic;
+}
+.errorlist{
+	color:#f00;
+}
+.form {
+	margin-bottom:0.2em;
+}
+.form label{
+	display:block;
+}
+.matchup table{
+	border-collapse:collapse;
+}
+
+.matchup td{
+	border:0;
+}
+
+.away_team_score{
+	color:red;
+}
+
+.most_wins{
+	border:2px solid #0a5;
+}
+
+#submit_button {
+	margin-top:0.5em;
+}
+
+img {
+	vertical-align:middle;
+}
+
+table {
+	border-collapse:separate;
+	border-spacing:0.1em 0.1em;
+}
+
+.winning_user {
+	border:2px solid #0a5;
+	background-color:#ff0;
+}
+
+td {
+	border:1px solid #ccc;
+	text-align:center;
+	vertical-align:middle;
+}
+
+.winning_pick {
+	border:2px solid #0a5;
+}
+
+ul {
+	list-style-type: none;
+}
+
+#update_scores .form{
+	margin-top:0.3em;
+}
+
+#scoreboard_table{
+	overflow-x:auto;
+}
