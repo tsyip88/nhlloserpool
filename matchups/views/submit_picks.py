@@ -44,7 +44,7 @@ def submit_picks_for_user(request, week_number, user, is_admin = False):
                 failed_to_save_field = True
         if failed_to_save_field:
             error_message = 'Failed to save picks. See below for details.'
-        if all_picks_are_eliminated:
+        if all_picks_are_eliminated and not is_admin:
             form_list = list()
             error_message = 'Sorry, All picks have been eliminated.'
     context = {'matchup_list' : matchup_list,
