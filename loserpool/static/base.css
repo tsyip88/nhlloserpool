@@ -64,6 +64,7 @@ body {
 }
 
 #header, #footer {
+	clear:both;
 	background-color:#13e;
 	color:#ececec;
 	padding:0.3em;
