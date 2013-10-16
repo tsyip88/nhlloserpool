@@ -25,7 +25,9 @@ h3 {
 #content .pick_cell {
 	padding:0;
 }
-
+.team_icon {
+	display:inline;
+}
 .team_icon img{
 	float:left;
 	vertical-align:middle;
