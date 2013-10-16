@@ -40,7 +40,9 @@ class PickSet(models.Model):
             index += 1
         return 0
     
-    def __unicode__(self): 
+    def __unicode__(self):
+        if self.user.first_name:
+            return self.user.first_name + " - " + str(self.letter_id())
         return self.user.username + " - " + str(self.letter_id())
     
     def is_eliminated(self):
