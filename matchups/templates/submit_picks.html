@@ -92,8 +92,16 @@ selector.addEventListener('change', handleChange);
 <tr><th>Away Team</th><th>Home Team</th></tr>
 {% for matchup in matchup_list %}
 <tr>
-<td><div class="team_icon"><img src="{{STATIC_URL}}{{matchup.away_team.image_location}}"/><p>{{matchup.away_team}}</p></div></td>
-<td><div class="team_icon"><img src="{{STATIC_URL}}{{matchup.home_team.image_location}}"/><p>{{matchup.home_team}}</p></div></td>
+<td class="pick_cell">
+<div class="team_icon">
+<img src="{{STATIC_URL}}{{matchup.away_team.image_location}}"/>
+<p>{{matchup.away_team}}</p>
+</div></td>
+<td class="pick_cell">
+<div class="team_icon">
+<img src="{{STATIC_URL}}{{matchup.home_team.image_location}}"/>
+<p>{{matchup.home_team}}</p>
+</div></td>
 </tr>
 {% endfor %}
 </table>

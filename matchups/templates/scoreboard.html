@@ -30,11 +30,9 @@
 			<td></td>
 		{% else %}
 		<td class="pick_cell">
-		<div class="team_icon">
+		<div{% if pick.is_winning_pick %} class="winning_pick"{% endif %}>
 		<img src="{{STATIC_URL}}{{pick.selected_team.image_location}}"/>
-		<p>
-		{{pick.selected_team}}
-		</p>
+		<p>{{pick.selected_team}}</p>
 		</div></td>
 		{% endif %}
 		{% endfor %}
