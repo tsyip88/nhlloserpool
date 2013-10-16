@@ -8,17 +8,22 @@
 <div id="scoreboard_table">
 <table>
 	<tr>
-		<th>Matchup</th>
+		<th>Team</th>
+		<th>Pick</th>
 		{% for week_number in current_week|get_range %}
 		<th>Week {{week_number|add:"1"}}</th>
 		{% endfor %}
 	</tr>
 	{% for pick_set in pick_sets %}
 	<tr>
+		{% if pick_set.is_first_pick_set_for_user %}
+		<td rowspan="{{ pick_set.total_number_of_pick_sets_for_user }}">
+		<div class="user_name"><h5{% if pick_set.user_is_eliminated %} class="eliminated_user"{% endif %}>{{pick_set.user_display_name}}</h5></div>
+		</td>
+		{% endif %}
 		<td>
-		<div class="pick_set_name">
-		<h5{% if pick_set.is_eliminated %} class="knocked_out_set"{% endif %}>{{pick_set}}</h5>
-		</div>
+		<h5{% if pick_set.is_eliminated %} class="eliminated_set"{% endif %}>{{pick_set.letter_id}}</h5>
+		</td>
 		</td>
 		{% for pick in pick_set.pick_set.all %}
 		{% if pick.pick_set.user != user and pick.week_number = selected_week and hide_other_team_picks_for_current_week and not is_admin %}
@@ -28,7 +33,7 @@
 		{% endif %}
 		{% endfor %}
 		{% for week_num in current_week|subtract:pick_set.pick_set.count|get_range %}
-		<td {%if pick_set.is_eliminated %} class="knocked_out"{% endif %}></td>
+		<td {%if pick_set.is_eliminated %} class="eliminated_pick"{% endif %}></td>
 		{% endfor %}
 	</tr>
 	{% endfor %}
