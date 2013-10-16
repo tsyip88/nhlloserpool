@@ -22,6 +22,22 @@ h3 {
 	color:red;
 }
 
+#content .pick_cell {
+	padding:0;
+}
+
+.team_icon img{
+	float:left;
+	vertical-align:middle;
+}
+.team_icon p{
+	line-height:30px;
+	display:inline;
+}
+.team_icon_text{
+	display:inline;
+}
+
 .eliminated_pick {
 	background-color:grey;
 }

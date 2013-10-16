@@ -29,7 +29,13 @@
 		{% if pick.pick_set.user != user and pick.week_number = selected_week and hide_other_team_picks_for_current_week and not is_admin %}
 			<td></td>
 		{% else %}
-		<td{% if pick.is_winning_pick %} class="winning_pick"{% endif %}><div class="team_icon"><img src="{{STATIC_URL}}{{pick.selected_team.image_location}}"/><p>{{pick.selected_team}}</p></div></td>
+		<td class="pick_cell">
+		<div class="team_icon">
+		<img src="{{STATIC_URL}}{{pick.selected_team.image_location}}"/>
+		<p>
+		{{pick.selected_team}}
+		</p>
+		</div></td>
 		{% endif %}
 		{% endfor %}
 		{% for week_num in current_week|subtract:pick_set.pick_set.count|get_range %}
