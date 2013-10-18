@@ -12,21 +12,12 @@ def scoreboard_current_week(request):
     return scoreboard(request, utilities.current_week_number())
     
 def scoreboard(request, week_number, is_admin=False):
-    ct1 = datetime.datetime.now()
-    print ct1
     pick_sets = order_list(request.user)
-    table_rows = list()
     week_has_started = model_utilities.has_first_matchup_of_week_started(week_number)
     current_week = int(utilities.current_week_number())
-    #PickSet.objects.select_related()
-    #Pick.objects.prefetch_related('pick_set')
     
     row_sets = dict()
     for pick_set in pick_sets:
-#     for pick_set_id in pick_set_ids:
-#         pick_set = PickSet.objects.select_related('user').get(id=pick_set_id)
-        ct = datetime.datetime.now()
-        print ct
         pick_user = pick_set.user
         row_set = get_or_create_row_set(row_sets, pick_user)
         row_set.rowspan += 1
@@ -37,12 +28,7 @@ def scoreboard(request, week_number, is_admin=False):
         table_row = PickRow()
         table_row.pick_set_is_eliminated = pick_set_is_eliminated
         table_row.letter_id = pick_set.letter_id()
-        
         table_row.pick_row_items = list()
-#         pick_ids = Pick.objects.filter(pick_set=pick_set).order_by('week_number').values_list('id', flat=True)
-#         for pick_id in pick_ids:
-#             pick = Pick.objects.get(id=pick_id)
-
         picks = Pick.objects.filter(pick_set=pick_set).order_by('week_number')
         for pick in picks:
             row_item = PickRowItem()
@@ -62,9 +48,6 @@ def scoreboard(request, week_number, is_admin=False):
                'selected_week': int(week_number),
                'week_date': week_date,
                'row_sets':row_sets.values()}
-    ct2 = datetime.datetime.now()
-    print ct2
-    print ct2-ct1
     return render(request, 'scoreboard.html', context)
 
 def get_or_create_row_set(row_sets, user):
