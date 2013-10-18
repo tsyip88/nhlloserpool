@@ -54,21 +54,6 @@ class PickSet(models.Model):
     
     def is_first_pick_set_for_user(self):
         return self.letter_id() == 'A'
-    
-    def total_number_of_pick_sets_for_user(self):
-        return PickSet.objects.filter(user=self.user).count()
-    
-    def user_display_name(self):
-        if self.user.first_name:
-            return self.user.first_name
-        return self.user.username
-    
-    def user_is_eliminated(self):
-        sets_for_user = PickSet.objects.filter(user=self.user)
-        for pick_set in sets_for_user:
-            if not pick_set.is_eliminated():
-                return False
-        return True
 
 class Pick(models.Model):
     selected_team = models.ForeignKey(Team)
