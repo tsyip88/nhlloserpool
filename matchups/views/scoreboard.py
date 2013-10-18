@@ -22,8 +22,8 @@ def scoreboard(request, week_number, is_admin=False):
         row_set = get_or_create_row_set(row_sets, pick_user)
         row_set.rowspan += 1
         pick_set_is_eliminated = pick_is_eliminated(pick_set)
-        if pick_set_is_eliminated:
-            row_set.user_is_eliminated = True
+        if not pick_set_is_eliminated:
+            row_set.user_is_eliminated = False
         
         table_row = PickRow()
         table_row.pick_set_is_eliminated = pick_set_is_eliminated
@@ -90,7 +90,7 @@ def order_list(current_user):
 
 class RowSet:
     rowspan = 0
-    user_is_eliminated = False
+    user_is_eliminated = True
     user_name = None
     pick_rows = list()
 
