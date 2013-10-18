@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import permission_required
 from matchups import utilities, model_utilities
 from matchups.models import PickSet, Pick
-import datetime
     
 @permission_required('matchups.add_matchup')
 def admin_scoreboard_for_week(request, week_number):
@@ -21,27 +20,34 @@ def scoreboard(request, week_number, is_admin=False):
         pick_user = pick_set.user
         row_set = get_or_create_row_set(row_sets, pick_user)
         row_set.rowspan += 1
-        pick_set_is_eliminated = pick_is_eliminated(pick_set)
-        if not pick_set_is_eliminated:
-            row_set.user_is_eliminated = False
+        picks = Pick.objects.filter(pick_set=pick_set).order_by('week_number')
         
         table_row = PickRow()
-        table_row.pick_set_is_eliminated = pick_set_is_eliminated
         table_row.letter_id = pick_set.letter_id()
         table_row.pick_row_items = list()
-        picks = Pick.objects.filter(pick_set=pick_set).order_by('week_number')
+        pick_set_is_eliminated = False
         for pick in picks:
             row_item = PickRowItem()
             is_current_user = pick_set.user == request.user
             row_item.show_pick = is_admin or is_current_user or week_has_started or pick.week_number != current_week
             row_item.is_winning_pick = pick.is_winning_pick
+            pick_set_is_eliminated |= row_item.is_winning_pick 
             row_item.team_image_location = pick.selected_team.image_location
             row_item.team_name = pick.selected_team.full_name()
             table_row.pick_row_items.append(row_item)
+            
+        minimum_number_of_picks = int(utilities.current_week_number())-1
+        missed_a_week = picks.count() < minimum_number_of_picks
+        pick_set_is_eliminated |= missed_a_week        
+          
+        table_row.pick_set_is_eliminated = pick_set_is_eliminated
+        row_set.user_is_eliminated &= pick_set_is_eliminated
+            
         for i in range(0, current_week-len(table_row.pick_row_items)):
             row_item = PickRowItem()
             row_item.is_unavailable = table_row.pick_set_is_eliminated
             table_row.pick_row_items.append(row_item)
+            
         row_set.pick_rows.append(table_row)
     week_date = str(utilities.game_day(week_number).strftime("%b %d, %Y"))
     context = {'current_week': current_week,
@@ -56,20 +62,6 @@ def get_or_create_row_set(row_sets, user):
         row_sets[user].user_name = user_display_name(user)
         row_sets[user].pick_rows = list()
     return row_sets[user]
-
-def pick_is_eliminated(pick_set):
-    pick_values = Pick.objects.filter(pick_set__id=pick_set.id).values_list('is_winning_pick', flat=True)
-    picked_wrong = True in pick_values 
-    minimum_number_of_picks = int(utilities.current_week_number())-1
-    missed_a_week = Pick.objects.filter(pick_set__id=pick_set.id).count() < minimum_number_of_picks
-    return picked_wrong or missed_a_week
-    
-def user_is_eliminated(user):   
-    sets_for_user = PickSet.objects.filter(user=user)
-    for pick_set in sets_for_user:
-        if not pick_is_eliminated(pick_set):
-            return False
-    return True
 
 def user_display_name(user):
     if user.first_name:
