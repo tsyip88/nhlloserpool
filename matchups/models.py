@@ -32,18 +32,12 @@ class Matchup(models.Model):
     
 class PickSet(models.Model):
     user = models.ForeignKey(User)
-    def letter_id(self):
-        index = 0
-        for pick in PickSet.objects.filter(user=self.user):
-            if pick.id == self.id:
-                return chr(ord('A')+index)
-            index += 1
-        return 0
+    letter_id = models.CharField(default='A', max_length='32')
     
     def __unicode__(self):
         if self.user.first_name:
-            return self.user.first_name + " - " + str(self.letter_id())
-        return self.user.username + " - " + str(self.letter_id())
+            return self.user.first_name + " - " + self.letter_id
+        return self.user.username + " - " + self.letter_id
     
     def is_eliminated(self):
         pick_values = Pick.objects.filter(pick_set__id=self.id).values_list('is_winning_pick', flat=True)
@@ -51,9 +45,6 @@ class PickSet(models.Model):
         minimum_number_of_picks = int(utilities.current_week_number())-1
         missed_a_week = Pick.objects.filter(pick_set__id=self.id).count() < minimum_number_of_picks
         return picked_wrong or missed_a_week
-    
-    def is_first_pick_set_for_user(self):
-        return self.letter_id() == 'A'
 
 class Pick(models.Model):
     selected_team = models.ForeignKey(Team)

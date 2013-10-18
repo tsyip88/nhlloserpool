@@ -11,7 +11,7 @@ def scoreboard_current_week(request):
     return scoreboard(request, utilities.current_week_number())
     
 def scoreboard(request, week_number, is_admin=False):
-    pick_sets = PickSet.objects.order_by('user').prefetch_related('pick_set')
+    pick_sets = PickSet.objects.prefetch_related('pick_set')
     week_has_started = model_utilities.has_first_matchup_of_week_started(week_number)
     current_week = int(utilities.current_week_number())
     
@@ -23,7 +23,7 @@ def scoreboard(request, week_number, is_admin=False):
         picks = pick_set.pick_set.all()
         
         table_row = PickRow()
-        table_row.letter_id = pick_set.letter_id()
+        table_row.letter_id = pick_set.letter_id
         table_row.pick_row_items = list()
         pick_set_is_eliminated = False
         number_of_picks = 0
