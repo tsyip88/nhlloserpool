@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import permission_required
 from matchups import utilities, model_utilities
-from matchups.models import PickSet, Pick
+from matchups.models import PickSet
     
 @permission_required('matchups.add_matchup')
 def admin_scoreboard_for_week(request, week_number):
@@ -11,7 +11,7 @@ def scoreboard_current_week(request):
     return scoreboard(request, utilities.current_week_number())
     
 def scoreboard(request, week_number, is_admin=False):
-    pick_sets = PickSet.objects.order_by('user')
+    pick_sets = PickSet.objects.order_by('user').prefetch_related('pick_set')
     week_has_started = model_utilities.has_first_matchup_of_week_started(week_number)
     current_week = int(utilities.current_week_number())
     
@@ -20,13 +20,15 @@ def scoreboard(request, week_number, is_admin=False):
         pick_user = pick_set.user
         row_set = get_or_create_row_set(row_sets, pick_user)
         row_set.rowspan += 1
-        picks = Pick.objects.filter(pick_set=pick_set).order_by('week_number')
+        picks = pick_set.pick_set.all()
         
         table_row = PickRow()
         table_row.letter_id = pick_set.letter_id()
         table_row.pick_row_items = list()
         pick_set_is_eliminated = False
+        number_of_picks = 0
         for pick in picks:
+            number_of_picks += 1
             row_item = PickRowItem()
             is_current_user = pick_set.user == request.user
             row_item.show_pick = is_admin or is_current_user or week_has_started or pick.week_number != current_week
@@ -37,7 +39,7 @@ def scoreboard(request, week_number, is_admin=False):
             table_row.pick_row_items.append(row_item)
             
         minimum_number_of_picks = int(utilities.current_week_number())-1
-        missed_a_week = picks.count() < minimum_number_of_picks
+        missed_a_week = number_of_picks < minimum_number_of_picks
         pick_set_is_eliminated |= missed_a_week        
           
         table_row.pick_set_is_eliminated = pick_set_is_eliminated
