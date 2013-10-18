@@ -11,7 +11,7 @@ def scoreboard_current_week(request):
     return scoreboard(request, utilities.current_week_number())
     
 def scoreboard(request, week_number, is_admin=False):
-    pick_sets = order_list(request.user)
+    pick_sets = PickSet.objects.order_by('user')
     week_has_started = model_utilities.has_first_matchup_of_week_started(week_number)
     current_week = int(utilities.current_week_number())
     
@@ -67,18 +67,6 @@ def user_display_name(user):
     if user.first_name:
         return user.first_name
     return user.username
-    
-def order_list(current_user):
-    ordered_list = list()
-    pick_sets = PickSet.objects.order_by('user')
-    index_to_insert = 0
-    for pick_set in pick_sets:
-        if pick_set.user == current_user:
-            ordered_list.insert(index_to_insert,pick_set)
-            index_to_insert += 1
-        else:
-            ordered_list.append(pick_set)
-    return ordered_list
 
 class RowSet:
     rowspan = 0
