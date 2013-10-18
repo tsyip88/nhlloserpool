@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import permission_required
 from matchups import utilities, model_utilities
 from matchups.models import PickSet
-import datetime
     
 @permission_required('matchups.add_matchup')
 def admin_scoreboard_for_week(request, week_number):
@@ -12,7 +11,6 @@ def scoreboard_current_week(request):
     return scoreboard(request, utilities.current_week_number())
     
 def scoreboard(request, week_number, is_admin=False):
-    ct1 = datetime.datetime.now()
     pick_sets = PickSet.objects.prefetch_related('pick_set')
     week_has_started = model_utilities.has_first_matchup_of_week_started(week_number)
     current_week = int(utilities.current_week_number())
@@ -62,7 +60,6 @@ def scoreboard(request, week_number, is_admin=False):
                'selected_week': int(week_number),
                'week_date': week_date,
                'row_sets':ordered_row_sets}
-    print datetime.datetime.now() - ct1
     return render(request, 'scoreboard.html', context)
 
 def get_or_create_row_set(row_sets, user, current_user):

@@ -69,7 +69,7 @@ selector.addEventListener('change', handleChange);
 	{% for form in form_list %}
 	<div class="form">
 		<h4>{{form.selected_team.label}}</h4>
-		{% if form.instance.pick_set.is_eliminated and not is_admin%}
+		{% if form.instance.pick_set.is_eliminated %}
 			<p>Eliminated</p>
 		{% else %}
 			<p>{{form.selected_team.errors}}</p>
