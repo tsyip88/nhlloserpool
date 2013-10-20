@@ -9,7 +9,7 @@
 <table>
 	<tr>
 		<th>Matchup</th>
-		{% for week_number in max_weeks|get_range %}
+		{% for week_number in current_week|get_range %}
 		<th>Week {{week_number|add:"1"}}</th>
 		{% endfor %}
 	</tr>
@@ -17,7 +17,7 @@
 	<tr>
 		<td>
 		<div class="pick_set_name">
-		<h5{% if pick_set.is_pick_set_invalid %} class="knocked_out_set"{% endif %}>{{pick_set}}</h5>
+		<h5{% if pick_set.is_eliminated %} class="knocked_out_set"{% endif %}>{{pick_set}}</h5>
 		</div>
 		</td>
 		{% for pick in pick_set.pick_set.all %}
@@ -27,8 +27,8 @@
 		<td{% if pick.is_winning_pick %} class="winning_pick"{% endif %}><div class="team_icon"><img src="{{STATIC_URL}}{{pick.selected_team.image_location}}"/><p>{{pick.selected_team}}</p></div></td>
 		{% endif %}
 		{% endfor %}
-		{% for week_num in max_weeks|subtract:pick_set.pick_set.count|get_range %}
-		<td {%if pick_set.is_pick_set_invalid %} class="knocked_out"{% endif %}></td>
+		{% for week_num in current_week|subtract:pick_set.pick_set.count|get_range %}
+		<td {%if pick_set.is_eliminated %} class="knocked_out"{% endif %}></td>
 		{% endfor %}
 	</tr>
 	{% endfor %}

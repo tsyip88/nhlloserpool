@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, permission_required
 from matchups import utilities
+from matchups import model_utilities
 from django.contrib.auth.models import User
 from matchups.forms import PickForm
 from matchups.models import Pick
 
 def submit_picks_for_current_matchup(request):
-    return submit_picks_for_week(request, utilities.current_submit_picks_week_number())
+    return submit_picks_for_week(request, utilities.current_week_number())
 
 @permission_required('matchups.add_matchup')
 def admin_submit_picks_for_week(request, week_number, user_id):
@@ -27,28 +28,25 @@ def submit_picks_for_user(request, week_number, user, is_admin = False):
     matchup_list = None
     form_list = list()
     error_message = ''
-    if utilities.has_first_matchup_of_week_started(week_number) and not is_admin:
+    if model_utilities.has_first_matchup_of_week_started(week_number) and not is_admin:
         error_message = 'Cannot change picks, first game of the week has already started.'
     else:
-        matchup_list = utilities.matchups_for_week(week_number)
-        pick_sets = utilities.pick_sets_for_user(user)
+        matchup_list = model_utilities.matchups_for_week(week_number)
+        pick_sets = model_utilities.pick_sets_for_user(user)
         failed_to_save_field = False
-        no_more_available_picks = True
-        unavailable_picks = list()
+        all_picks_are_eliminated = True
         for pick_set in pick_sets:
-            minimum_number_of_picks = int(week_number)-1
-            missed_a_week = Pick.objects.filter(pick_set=pick_set).count() < minimum_number_of_picks
-            pick_is_unavailable = pick_set.is_pick_set_invalid() or missed_a_week
-            if pick_is_unavailable:
-                unavailable_picks.append(pick_set.id)
-            else:
-                no_more_available_picks = False
-            form, failed_to_save = create_or_get_form_for_pick(request, week_number, pick_set, pick_is_unavailable)
+            if not pick_set.is_eliminated():
+                all_picks_are_eliminated = False
+            form, failed_to_save = create_or_get_form_for_pick(request, week_number, pick_set)
             form_list.append(form)
             if failed_to_save:
                 failed_to_save_field = True
         if failed_to_save_field:
             error_message = 'Failed to save picks. See below for details.'
+        if all_picks_are_eliminated:
+            form_list = list()
+            error_message = 'Sorry, All picks have been eliminated.'
     context = {'matchup_list' : matchup_list,
                'form_list' : form_list,
                'error_message' : error_message,
@@ -58,22 +56,20 @@ def submit_picks_for_user(request, week_number, user, is_admin = False):
                'users' : User.objects.all(),
                'weeks' : range(1,utilities.current_week_number()+2),
                'submit_user' : user,
-               'unavailable_picks' : unavailable_picks,
-               'no_more_available_picks' : no_more_available_picks,
                'is_admin' : is_admin}
     return render(request, 'submit_picks.html', context)
 
-def create_or_get_form_for_pick(request, week_number, pick_set, ignore_save_state):
+def create_or_get_form_for_pick(request, week_number, pick_set):
     failed_to_save_field = False
-    pick = utilities.get_or_create_pick(week_number, pick_set)
+    pick = model_utilities.get_or_create_pick(week_number, pick_set)
     if request.method == "POST":
         form = PickForm(request.POST, prefix=pick_set.id, instance=pick)
         if form.is_valid():
             form.save()
-        elif not ignore_save_state:
+        elif not pick_set.is_eliminated():
             failed_to_save_field = True
         picks = Pick.objects.filter(week_number=week_number, pick_set=pick_set)
-        utilities.update_winning_picks_for_week(week_number, picks)
+        model_utilities.update_winning_picks_for_week(week_number, picks)
     else:
         form = PickForm(prefix=pick_set.id, instance=pick)
     return form, failed_to_save_field

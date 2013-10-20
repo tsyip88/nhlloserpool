@@ -2,6 +2,7 @@ from django.db import models
 from teams.models import Team
 from django.contrib.auth.models import User
 from matchups.matchup_defs import CURRENT_TIMEZONE
+import utilities
 import pytz
 
 class Matchup(models.Model):
@@ -9,7 +10,6 @@ class Matchup(models.Model):
     away_team = models.ForeignKey(Team, related_name="away_team")
     home_team_score = models.SmallIntegerField(default=-1)
     away_team_score = models.SmallIntegerField(default=-1)
-    went_to_shootout = models.BooleanField(default=False)
     date_time = models.DateTimeField()
     
     def date_time_string(self):
@@ -43,9 +43,12 @@ class PickSet(models.Model):
     def __unicode__(self): 
         return self.user.username + " - " + str(self.letter_id())
     
-    def is_pick_set_invalid(self):
+    def is_eliminated(self):
         pick_values = Pick.objects.filter(pick_set__id=self.id).values_list('is_winning_pick', flat=True)
-        return True in pick_values
+        picked_wrong = True in pick_values 
+        minimum_number_of_picks = int(utilities.current_week_number())-1
+        missed_a_week = Pick.objects.filter(pick_set__id=self.id).count() < minimum_number_of_picks
+        return picked_wrong or missed_a_week
 
 class Pick(models.Model):
     selected_team = models.ForeignKey(Team)

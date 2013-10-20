@@ -57,36 +57,32 @@ selector.addEventListener('change', handleChange);
 {% endif %}
 </div>
 
+{% if form_list %}
 <div id="pick_block">
 <h3>Picks</h3>	
-{% if no_more_available_picks %}
-	<p>Sorry, no more picks are available</p>
-{% else %}
-	{% if form_list %}
-		{% if is_admin %}
-			<form action="{% url 'matchups:admin_submit_picks_for_week' week_number submit_user.id %}" method="post">
-		{% else %}
-			<form action="{% url 'matchups:submit_picks_for_week' week_number %}" method="post" name="nme1">
-		{% endif %}
-		{% csrf_token %}
-		{% for form in form_list %}
-		<div class="form">
-			<h4>{{form.selected_team.label}}</h4>
-			{% if form.instance.pick_set.id in unavailable_picks and not is_admin%}
-				<p>Knocked out</p>
-			{% else %}
-				<p>{{form.selected_team.errors}}</p>
-				<p>{{form.selected_team}}</p>
-			{% endif %}
-		</div>
-		{% endfor %}
-			<div id="submit_button">
-			<input type="submit" value="Submit picks" id="submit" name="submit_picks"/>
-			</div>
-			</form>
+	{% if is_admin %}
+		<form action="{% url 'matchups:admin_submit_picks_for_week' week_number submit_user.id %}" method="post">
 	{% else %}
-		<p>No matchups available</p>
+		<form action="{% url 'matchups:submit_picks_for_week' week_number %}" method="post" name="nme1">
 	{% endif %}
+	{% csrf_token %}
+	{% for form in form_list %}
+	<div class="form">
+		<h4>{{form.selected_team.label}}</h4>
+		{% if form.instance.pick_set.is_eliminated and not is_admin%}
+			<p>Eliminated</p>
+		{% else %}
+			<p>{{form.selected_team.errors}}</p>
+			<p>{{form.selected_team}}</p>
+		{% endif %}
+	</div>
+	{% endfor %}
+		<div id="submit_button">
+		<input type="submit" value="Submit picks" id="submit" name="submit_picks"/>
+		</div>
+		</form>
+{% else %}
+	<p>No matchups available</p>
 {% endif %}
 </div>
 
@@ -96,8 +92,9 @@ selector.addEventListener('change', handleChange);
 <tr><th>Away Team</th><th>Home Team</th></tr>
 {% for matchup in matchup_list %}
 <tr>
+<td><div class="team_icon"><img src="{{STATIC_URL}}{{matchup.away_team.image_location}}"/><p>{{matchup.away_team}}</p></div></td>
 <td><div class="team_icon"><img src="{{STATIC_URL}}{{matchup.home_team.image_location}}"/><p>{{matchup.home_team}}</p></div></td>
-<td><div class="team_icon"><img src="{{STATIC_URL}}{{matchup.away_team.image_location}}"/><p>{{matchup.away_team}}</p></div></td></tr>
+</tr>
 {% endfor %}
 </table>
 </div>

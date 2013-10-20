@@ -1,5 +1,5 @@
 from matchups.models import Pick, Matchup
-from matchups import utilities
+from matchups import model_utilities
 from django import forms
 
 class PickForm(forms.ModelForm):
@@ -12,7 +12,7 @@ class PickForm(forms.ModelForm):
         if self.instance:
             week_number = self.instance.week_number 
             previously_selected_teams = Pick.objects.filter(pick_set=self.instance.pick_set).exclude(week_number=week_number).values_list('selected_team', flat=True)
-            team_choices = utilities.get_list_of_choices_for_week(week_number)
+            team_choices = model_utilities.get_list_of_choices_for_week(week_number)
             for team in team_choices:
                 if team.id not in previously_selected_teams:
                     widget_choices.append((team.id, team.full_name()))
@@ -23,4 +23,4 @@ class PickForm(forms.ModelForm):
 class MatchupForm(forms.ModelForm):
     class Meta:
         model = Matchup
-        fields = {'home_team_score', 'away_team_score', 'went_to_shootout'}
+        fields = {'home_team_score', 'away_team_score'}
